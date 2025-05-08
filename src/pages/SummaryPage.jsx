@@ -1,7 +1,6 @@
 import {useState, useEffect} from "react";
 import TimerPage from "./TimerPage.jsx";
 import ApiService from "../services/ApiService.js";
-import TestCircularTimer from "./test/TestTimer.jsx";
 export const apiService = new ApiService();
 
 function SummaryPage() {
@@ -11,35 +10,10 @@ function SummaryPage() {
         marginLeft: 0,
         maxWidth: '100%'
     };
-
-    function timeStringToSeconds(timeStr) {
-        if (!timeStr) return 0;
-        const parts = timeStr.split(':');
-
-        const hours = parseInt(parts[0], 10);
-        const minutes = parseInt(parts[1], 10);
-        const seconds = parseInt(parts[2], 10);
-
-        return (hours * 60) + minutes + (seconds / 60);
-    }
-    
     const [data, setData] = useState([]);
-    const [timerData, setTimerData] = useState({});
-    const [gameState, setGameState] = useState({});
     useEffect(() => {
         (async () => {
             setData(await apiService.getSummary());
-            let gameState = await apiService.getGameState();
-            setGameState(gameState);
-            let timeData = {
-                countdown: gameState.countdown,
-                duration: gameState.duration,
-                gameStatus: gameState.state,
-            };
-            //duration
-            //countdown
-            if(timeData.countdown !== null)
-                setTimerData(timeData)
             console.log(await apiService.getSummary());
         })();
     }, []);
@@ -59,13 +33,11 @@ function SummaryPage() {
                 <div className='row' style={rowFix}>
                     <div className='col col-sm-12 col-lg-5'>
                         <div className='sectionBox'>
-                            {/*<TimerPage countDown={timerData.countdown} duration={timerData.duration}/>*/}
-                            <TestCircularTimer gameState={gameState}/>
+                            <TimerPage/>
                         </div>
                     </div>
                     <div className='col col-sm-12 col-lg-7'>
                         <div className='sectionBox'>
-                            <h2>{timerData.countdown}</h2>
                             <table className="table table-hover">
                                 <thead>
                                 <tr>

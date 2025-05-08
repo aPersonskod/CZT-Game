@@ -1,68 +1,164 @@
-import {useState, useEffect, useRef} from 'react';
+import { useState, useEffect, useRef } from 'react';
 import '../Timer.css';
 import ApiService from "../services/ApiService.js";
 export const apiService = new ApiService();
 
-function TimerPage({countDown = 45, duration = 60} = {}) { // in minutes
-
+const TestTimer = () => {
     const size = 200;
     const strokeWidth = 10;
-    const [timeLeft, setTimeLeft] = useState(duration);
+    const [gameState, setGameState] = useState({
+        state: 'Pause',
+        countdown: '00:10:00',
+        elapsed: '00:01:47',
+        duration: '00:20:00',
+        beginUtc: '2025-05-07T00:16:46.7404174Z'
+    });
+    const [isReset, setIsReset] = useState(false);
+
+    useEffect(() => {
+        (async () => {
+            let gs = await apiService.getGameState();
+            setGameState(gs);
+            if(gs.state === 'Play'){
+                await continueFetching();
+            }
+        })();
+    }, [isReset]);
+
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
+    const [isActive, setIsActive] = useState(false);
+
+    const fetchData = async () => {
+        try {
+            setLoading(true);
+            /*            const response = await fetch(apiUrl);
+            
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status}`);
+                        }*/
+
+            const result = await apiService.getGameState();
+            setGameState(result);
+            setError(null);
+        } catch (err) {
+            setError(err.message);
+            setGameState(null);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const startFetching = async () => {
+        if (!isActive) {
+            await apiService.startGame();
+            // Initial fetch immediately
+            fetchData();
+            // Then set up interval
+            intervalRef.current = setInterval(fetchData, 1000);
+            setIsActive(true);
+        }
+    };
+    const continueFetching = async () => {
+        if (!isActive) {
+            await apiService.continueGame();
+            // Initial fetch immediately
+            fetchData();
+            // Then set up interval
+            intervalRef.current = setInterval(fetchData, 1000);
+            setIsActive(true);
+        }
+    };
+
+    const stopFetching = async () => {
+        if (isActive) {
+            await apiService.stopGame();
+            clearInterval(intervalRef.current);
+            intervalRef.current = null;
+            setIsActive(false);
+        }
+    };
+
+    const resetFetching = async () => {
+        if (isActive) {
+            await apiService.resetGame();
+            clearInterval(intervalRef.current);
+            intervalRef.current = null;
+            setIsActive(false);
+        }
+    };
+
+    // Cleanup on unmount
+    useEffect(() => {
+        return () => {
+            if (intervalRef.current) {
+                clearInterval(intervalRef.current);
+            }
+        };
+    }, []);
+
+    // Convert time strings to total seconds
+    const timeToSeconds = (timeStr) => {
+        const [hours, minutes, seconds] = timeStr.split(':').map(Number);
+        return hours * 3600 + minutes * 60 + seconds;
+    };
+
+    const leftSeconds = timeToSeconds(gameState.countdown);
     const [isRunning, setIsRunning] = useState(false);
-    const [isPaused, setIsPaused] = useState(false);
     const intervalRef = useRef(null);
 
     // Calculate circle properties
     const radius = (size - strokeWidth) / 2;
     const circumference = radius * 2 * Math.PI;
-    const strokeDashoffset = circumference - (timeLeft / duration) * circumference;
+    //const strokeDashoffset = circumference - (timeLeft / initialSeconds) * circumference;
+    const strokeDashoffset = circumference - (timeToSeconds(gameState.countdown) / timeToSeconds(gameState.duration)) * circumference;
 
     // Start or pause the timer
     const toggleTimer = async () => {
         setIsRunning(!isRunning);
-        setIsPaused(isRunning);
+        if(gameState.state === "None"){
+            await startFetching();
+            console.log("Start game");
+        }
+        if(gameState.state === "Play"){
+            await stopFetching();
+            console.log("Pause game");
+        }
+        if(gameState.state === "Pause"){
+            await continueFetching();
+            console.log("Continue game");
+        }
+        setGameState(await apiService.getGameState());
+        setIsReset(false);
     };
 
-    // Reset the timer
+    // Reset the timer to initial countDown value
     const resetTimer = async () => {
         setIsRunning(false);
-        setTimeLeft(countDown);
+        await resetFetching();
+        console.log("Reset game");
+        setIsReset(true);
         clearInterval(intervalRef.current);
     };
 
-    useEffect(() => {
-        if (isRunning) {
-            intervalRef.current = setInterval(() => {
-                setTimeLeft(prevTime => {
-                    if (prevTime <= 0.1) {
-                        clearInterval(intervalRef.current);
-                        setIsRunning(false);
-                        return 0;
-                    }
-                    return prevTime - 0.1;
-                });
-            }, 100);
-        } else {
-            clearInterval(intervalRef.current);
-            if(!isPaused) setTimeLeft(countDown);
-        }
+    // Format seconds to HH:MM:SS
+    const formatTime = (totalSeconds) => {
+        const hours = Math.floor(totalSeconds / 3600);
+        const minutes = Math.floor((totalSeconds % 3600) / 60);
+        const seconds = totalSeconds % 60;
 
-        return () => clearInterval(intervalRef.current);
-    }, [isRunning]);
-
-    // Format time as MM:SS.S
-    const formatTime = (time2) => {
-        let time = time2 * 60;
-        const minutes = Math.floor(time / 60);
-        const seconds = (time % 60).toFixed(1);
-        return `${minutes.toString().padStart(2, '0')}:${seconds.padStart(4, '0')}`;
+        return [
+            hours.toString().padStart(2, '0'),
+            minutes.toString().padStart(2, '0'),
+            seconds.toString().padStart(2, '0')
+        ].join(':');
     };
 
     return (
         <div className="timer-container">
             <div
                 className="timer-circle"
-                style={{width: size, height: size}}
+                style={{ width: size, height: size }}
             >
                 <svg className="timer-svg" width={size} height={size}>
                     <circle
@@ -84,22 +180,22 @@ function TimerPage({countDown = 45, duration = 60} = {}) { // in minutes
                     />
                 </svg>
                 <div className="timer-text">
-                    {formatTime(timeLeft)}
+                    {formatTime(leftSeconds)}
                 </div>
             </div>
             <div className="timer-controls">
                 <button onClick={toggleTimer}>
-                    {isRunning ?
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
-                             className="bi bi-pause-fill" viewBox="0 0 16 16">
-                            <path
-                                d="M5.5 3.5A1.5 1.5 0 0 1 7 5v6a1.5 1.5 0 0 1-3 0V5a1.5 1.5 0 0 1 1.5-1.5m5 0A1.5 1.5 0 0 1 12 5v6a1.5 1.5 0 0 1-3 0V5a1.5 1.5 0 0 1 1.5-1.5"/>
-                        </svg>
-                        :
+                    {gameState.state === "Pause" || gameState.state === "None" ?
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
                              className="bi bi-play-fill" viewBox="0 0 16 16">
                             <path
                                 d="m11.596 8.697-6.363 3.692c-.54.313-1.233-.066-1.233-.697V4.308c0-.63.692-1.01 1.233-.696l6.363 3.692a.802.802 0 0 1 0 1.393"/>
+                        </svg>
+                        :
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+                             className="bi bi-pause-fill" viewBox="0 0 16 16">
+                            <path
+                                d="M5.5 3.5A1.5 1.5 0 0 1 7 5v6a1.5 1.5 0 0 1-3 0V5a1.5 1.5 0 0 1 1.5-1.5m5 0A1.5 1.5 0 0 1 12 5v6a1.5 1.5 0 0 1-3 0V5a1.5 1.5 0 0 1 1.5-1.5"/>
                         </svg>
                     }
                 </button>
@@ -127,6 +223,6 @@ function TimerPage({countDown = 45, duration = 60} = {}) { // in minutes
             </div>
         </div>
     );
-}
+};
 
-export default TimerPage;
+export default TestTimer;

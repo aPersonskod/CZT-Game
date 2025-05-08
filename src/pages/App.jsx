@@ -4,8 +4,7 @@ import viteLogo from '/vite.svg'
 /*import '../App.css'*/
 import AppService from '../services/AppService'
 import ApiService from "../services/ApiService.js";
-import TestTimer from "./test/TestTimer.jsx";
-import TestComponent from "./test/TestComponent.jsx";
+import TimerPage from "./TimerPage.jsx";
 
 export const appService = new AppService();
 export const apiService = new ApiService();
@@ -99,11 +98,6 @@ function App() {
     }*/
     
     async function getCalculationResult() {
-    /*    let gameId = '1';
-        fetch(`${appService.hostName}${appService.apiDir}get-calculation-result?gameId=${gameId}`, {
-            method: 'GET',
-            headers: appService.optionHeaders
-        }).then(res => res.json()).then(console.log);*/
         await apiService.getCalculationResult();
     }
 
@@ -174,16 +168,8 @@ function App() {
             </p>
             {
                 gameState.state !== undefined &&
-                <TestTimer />
-/*                <TestTimer gameState={{
-                    state: 'Pause',
-                    countdown: '00:00:10',
-                    elapsed: '00:00:00',
-                    duration: '00:00:10',
-                    beginUtc: '2025-05-07T00:16:46.7404174Z'   
-                }} />*/
+                <TimerPage />
             }
-            <TestComponent content={gameState} />
         </>
     )
 }
