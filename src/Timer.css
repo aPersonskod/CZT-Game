@@ -1,0 +1,67 @@
+.timer-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-family: Arial, sans-serif;
+}
+
+.timer-circle {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 20px;
+}
+
+.timer-svg {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.timer-circle-bg {
+    fill: none;
+    stroke: #e0e0e0;
+}
+
+.timer-circle-progress {
+    fill: none;
+    /*stroke: #4CAF50;*/
+    stroke: #0D6EFD;
+    stroke-linecap: round;
+    transition: stroke-dashoffset 0.1s linear;
+}
+
+.timer-text {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #333;
+}
+
+.timer-controls {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.timer-controls button {
+    padding: 8px 16px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 4px;
+    /*background-color: #4CAF50;*/
+    background-color: #0D6EFD;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.timer-controls button:hover {
+    /*background-color: #45a049;*/
+    background-color: #0D6EFD;
+}
+
+.timer-controls button:active {
+   /* background-color: #3d8b40;*/
+    background-color: #0D6EFD;
+}

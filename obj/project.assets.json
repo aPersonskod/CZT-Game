@@ -1,0 +1,57 @@
+{
+  "version": 3,
+  "targets": {
+    "net6.0-none": {}
+  },
+  "libraries": {},
+  "projectFileDependencyGroups": {
+    "net6.0-none": []
+  },
+  "packageFolders": {
+    "C:\\Users\\Andrew\\.nuget\\packages\\": {}
+  },
+  "project": {
+    "version": "1.0.0",
+    "restore": {
+      "projectUniqueName": "E:\\projects\\insat.game\\imsat.game.frontend\\imsat.game.frontend.esproj",
+      "projectName": "imsat.game.frontend",
+      "projectPath": "E:\\projects\\insat.game\\imsat.game.frontend\\imsat.game.frontend.esproj",
+      "packagesPath": "C:\\Users\\Andrew\\.nuget\\packages\\",
+      "outputPath": "E:\\projects\\insat.game\\imsat.game.frontend\\obj\\",
+      "projectStyle": "PackageReference",
+      "configFilePaths": [
+        "C:\\Users\\Andrew\\AppData\\Roaming\\NuGet\\NuGet.Config"
+      ],
+      "originalTargetFrameworks": [
+        "net6.0"
+      ],
+      "sources": {
+        "E:\\nugets": {},
+        "https://api.nuget.org/v3/index.json": {}
+      },
+      "frameworks": {
+        "net6.0-none": {
+          "targetAlias": "net6.0",
+          "projectReferences": {}
+        }
+      },
+      "restoreAuditProperties": {
+        "enableAudit": "true",
+        "auditLevel": "low",
+        "auditMode": "direct"
+      }
+    },
+    "frameworks": {
+      "net6.0-none": {
+        "targetAlias": "net6.0"
+      }
+    }
+  },
+  "logs": [
+    {
+      "code": "NU1012",
+      "level": "Error",
+      "message": "Platform version is not present for one or more target frameworks, even though they have specified a platform: net6.0-none"
+    }
+  ]
+}
