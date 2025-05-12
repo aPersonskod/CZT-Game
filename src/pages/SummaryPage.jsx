@@ -18,6 +18,10 @@ function SummaryPage() {
         })();
     }, []);
     
+    const handleChangeData = async () => {
+        setData(await apiService.getSummary());
+    }
+    
     const headerValues = ['Команда', 'Прибытие поездов', 'Отправлено поездов', 'Итог'];
     const tableValues = [
         {name:'Alfreds Futterkiste1', arrival:'5', departures:'0'},
@@ -30,13 +34,13 @@ function SummaryPage() {
     return (
         <>
             <div>
-                <div className='row' style={rowFix}>
-                    <div className='col col-sm-12 col-lg-5'>
+                <div className='row justify-content-center' style={rowFix}>
+                    <div className='col col-sm-12 col-md-10 col-lg-3'>
                         <div className='sectionBox'>
-                            <TimerPage/>
+                            <TimerPage handleChangeData={handleChangeData}/>
                         </div>
                     </div>
-                    <div className='col col-sm-12 col-lg-7'>
+                    <div className='col col-sm-12 col-md-10 col-lg-5'>
                         <div className='sectionBox'>
                             <table className="table table-hover">
                                 <thead>

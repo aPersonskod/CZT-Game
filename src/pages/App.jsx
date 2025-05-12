@@ -2,7 +2,7 @@ import {useEffect, useState} from 'react'
 import reactLogo from '../assets/react.svg'
 import viteLogo from '/vite.svg'
 /*import '../App.css'*/
-import AppService from '../services/AppService.js'
+import AppService from '../services/AppService'
 import ApiService from "../services/ApiService.js";
 import TimerPage from "./TimerPage.jsx";
 
@@ -10,14 +10,17 @@ export const appService = new AppService();
 export const apiService = new ApiService();
 function App() {
     const [count, setCount] = useState("");
-    const [gameState, setGameState] = useState({});
-    
+    const [gameState, setGameState] = useState({countdown:'', duration:'', state:''});
+    const [canShowTimer, setCanShowTimer] = useState(false);
+
     useEffect(() => {
         (async () => {
-            await getGameState();
+            //await getGameState();
+            let game = await apiService.getGame();
+            setCanShowTimer(game.gamePlayState !== 'None');
         })();
     }, []);
-    
+
     const getGameState = async () => {
         setGameState(await apiService.getGameState());
     }
@@ -56,56 +59,65 @@ function App() {
     async function initializeVtd() {
         console.log(await apiService.initializeVtd());
     }
-    
+
     function initializeVtd2() {
         fetch(`${appService.hostName}${appService.apiDir}initialize-vtd`, options)
             .then(res => res.json())
             .then(console.log)
-            .catch(err => {console.log(err)});
+            .catch(err => {
+                console.log(err)
+            });
     }
-    
+
     async function createGame() {
         let gameId = await apiService.createGame();
         console.log(`created gameId = ${gameId}`);
     }
-/*    function startGame() {
-        let gameId = '1';
-        let gameMode = 'Championship';
-        fetch(`${appService.hostName}${appService.apiDir}start-game?gameId=${gameId}&mode=${gameMode}`, {
-            method: 'POST',
-            headers: appService.optionHeaders,
-            body: JSON.stringify({
-                'updateTimerIsOn': true,
-                'updateClientTime': 1,
-                'updateServerTime': 1,
-                'highlightTime': 4,
-                'gameTime': 120,
-                'videoTimeOut': 10,
-                'countOfVideo': 1,
-                'currentRound': 'First',
-                'currentPhase': 'First',
-                'paramStandardSetting':{
-                    'loceCrewEfficiencyStandard': 78,
-                    'downtimeStandard': 247,
-                    'downtimeOfLocalTrainsStandard': 466,
-                    'downtimeOfUsualTrainsStandard': 126,
-                    'crewEfficiencyTPCStandard': 12,
-                    'loadingStandard': 350,
-                    'unloadingStandard': 350
-                }
-            })
-        }).then(res => console.log(res.ok));
-    }*/
-    
+    const [input, setInput] = useState('');
+    async function deleteGame() {
+        await apiService.deleteGame(input);
+        await getAvailableGames();
+    }
+
+    /*    function startGame() {
+            let gameId = '1';
+            let gameMode = 'Championship';
+            fetch(`${appService.hostName}${appService.apiDir}start-game?gameId=${gameId}&mode=${gameMode}`, {
+                method: 'POST',
+                headers: appService.optionHeaders,
+                body: JSON.stringify({
+                    'updateTimerIsOn': true,
+                    'updateClientTime': 1,
+                    'updateServerTime': 1,
+                    'highlightTime': 4,
+                    'gameTime': 120,
+                    'videoTimeOut': 10,
+                    'countOfVideo': 1,
+                    'currentRound': 'First',
+                    'currentPhase': 'First',
+                    'paramStandardSetting':{
+                        'loceCrewEfficiencyStandard': 78,
+                        'downtimeStandard': 247,
+                        'downtimeOfLocalTrainsStandard': 466,
+                        'downtimeOfUsualTrainsStandard': 126,
+                        'crewEfficiencyTPCStandard': 12,
+                        'loadingStandard': 350,
+                        'unloadingStandard': 350
+                    }
+                })
+            }).then(res => console.log(res.ok));
+        }*/
+
     async function getCalculationResult() {
         await apiService.getCalculationResult();
     }
 
-    async function getSummary(){
+    async function getSummary() {
         console.log(await apiService.getSummary());
     }
+
     async function getAvailableGames() {
-        await apiService.getCalculationResult();
+        console.log(await apiService.getAvailableGames());
     }
 
     return (
@@ -126,6 +138,13 @@ function App() {
                 <button onClick={() => createGame()}>
                     Create Game
                 </button>
+                <div className='d-flex'>
+                    <button onClick={() => deleteGame()}>
+                        Delete Game
+                    </button>
+                    <input type='text' placeholder='Delete Game' 
+                           onChange={e => setInput(e.target.value)}/>
+                </div>
                 <button onClick={() => startGame()}>
                     Start Game
                 </button>
@@ -167,9 +186,10 @@ function App() {
                 Click on the Vite and React logos to learn more
             </p>
             {
-                gameState.state !== undefined &&
-                <TimerPage />
+                /*canShowTimer &&
+                <TimerPage/>*/
             }
+            <TimerPage/>
         </>
     )
 }

@@ -36,9 +36,9 @@ function DetailsPage() {
     return (
         <>
             <div>
-                <div className='row' style={rowFix}>
+                <div className='row justify-content-center' style={rowFix}>
                     <div className='col col-sm-12 col-lg-8'>
-                        <div className='d-flex marginBox'>
+                        <div className='d-flex marginBoxTop'>
                             <h2 className="p-2">Команда:</h2>
                             <Form.Select style={{maxWidth: '230px'}}>
                                 <option value="1">Этап 1</option>
@@ -96,7 +96,7 @@ function DetailsPage() {
                         </div>
                     </div>
                     <div className='col col-sm-12 col-lg-8'>
-                        <div className='sectionBox'>
+                        <div className='sectionBox marginBoxBottom'>
                             <h2 style={{marginBottom: '20px'}}>Прочие ошибки</h2>
                             <table className="table table-hover">
                                 <thead>

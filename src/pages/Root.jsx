@@ -9,7 +9,11 @@ function Root() {
     const [init, setInit] = useState(false);
     useEffect( () => {
         (async () => {
-            setInit(await apiService.initializeVtd());
+            let initResult = await apiService.initializeVtd();
+            if(initResult.value === true && initResult.isSuccess === true){
+                console.log(`init = ${initResult.value}`);
+                setInit(initResult.value);
+            }
         })();
     },[]);
     

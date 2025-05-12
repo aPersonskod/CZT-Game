@@ -19,11 +19,8 @@ export default class ApiService {
         )
     };
     async initializeVtd(){
-        let res = await fetch(`${appService.hostName}${appService.apiDir}initialize-vtd`, this.options)
+        return await fetch(`${appService.hostName}${appService.apiDir}initialize-vtd`, this.options)
             .then(res => res.json());
-        if(res.value === true && res.isSuccess === true){
-            return res.value;
-        }
     }
     
     async createGame(){
@@ -35,6 +32,13 @@ export default class ApiService {
             })
         }).then(res => res.json());
         return response.id; // game id
+    }
+
+    async deleteGame(gameId) {
+        await fetch(`${appService.hostName}${appService.apiDir}delete-game?gameId=${gameId}`, {
+            method: 'POST',
+            headers: appService.optionHeaders,
+        }).then(res => console.log(`game ${gameId} removing status = ${res.ok}`));
     }
     
     async getAvailableGames() {
@@ -50,10 +54,9 @@ export default class ApiService {
             let newGameId = await this.createGame();
             if(newGameId) {
                 games = await this.getAvailableGames();
-                return games[0];
             }
         }
-        return games[0];
+        return games[games.length - 1];
     }
     
     async startGame(){

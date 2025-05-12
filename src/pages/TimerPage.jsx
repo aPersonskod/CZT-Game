@@ -3,23 +3,28 @@ import '../Timer.css';
 import ApiService from "../services/ApiService.js";
 export const apiService = new ApiService();
 
-const TestTimer = () => {
+const TimerPage = ({handleChangeData}) => {
     const size = 200;
     const strokeWidth = 10;
     const [gameState, setGameState] = useState({
         state: 'Pause',
-        countdown: '00:10:00',
-        elapsed: '00:01:47',
-        duration: '00:20:00',
+        countdown: '00:00:00',
+        elapsed: '00:00:00',
+        duration: '00:00:00',
         beginUtc: '2025-05-07T00:16:46.7404174Z'
     });
     const [isReset, setIsReset] = useState(false);
+    const [game, setGame] = useState({});
 
     useEffect(() => {
         (async () => {
-            let gs = await apiService.getGameState();
-            setGameState(gs);
-            if(gs.state === 'Play'){
+            let currentGame = await apiService.getGame();
+            setGame(currentGame);
+            if(currentGame.gamePlayState !== "None"){
+                let gs = await apiService.getGameState();
+                setGameState(gs);
+            }
+            if(currentGame.gamePlayState === 'Play'){
                 await continueFetching();
             }
         })();
@@ -110,25 +115,31 @@ const TestTimer = () => {
     // Calculate circle properties
     const radius = (size - strokeWidth) / 2;
     const circumference = radius * 2 * Math.PI;
-    //const strokeDashoffset = circumference - (timeLeft / initialSeconds) * circumference;
-    const strokeDashoffset = circumference - (timeToSeconds(gameState.countdown) / timeToSeconds(gameState.duration)) * circumference;
+    const strokeDashoffset = () => {
+        let timeRatio = game.gamePlayState === "None" 
+            ? 0 : (timeToSeconds(gameState.countdown) / timeToSeconds(gameState.duration))
+        let strokeDashoffset = circumference - timeRatio * circumference;
+        return strokeDashoffset.toString();
+    }
 
     // Start or pause the timer
     const toggleTimer = async () => {
         setIsRunning(!isRunning);
-        if(gameState.state === "None"){
+        if(game.gamePlayState === "None"){
             await startFetching();
             console.log("Start game");
         }
-        if(gameState.state === "Play"){
+        if(game.gamePlayState === "Play"){
             await stopFetching();
             console.log("Pause game");
         }
-        if(gameState.state === "Pause"){
+        if(game.gamePlayState === "Pause"){
             await continueFetching();
             console.log("Continue game");
         }
+        handleChangeData();
         setGameState(await apiService.getGameState());
+        setGame(await apiService.getGame());
         setIsReset(false);
     };
 
@@ -175,17 +186,17 @@ const TestTimer = () => {
                         r={radius}
                         strokeWidth={strokeWidth}
                         strokeDasharray={circumference}
-                        strokeDashoffset={strokeDashoffset}
+                        strokeDashoffset={strokeDashoffset()}
                         transform={`rotate(-90 ${size / 2} ${size / 2})`}
                     />
                 </svg>
                 <div className="timer-text">
-                    {formatTime(leftSeconds)}
+                    {game.gamePlayState === 'None' ? '00:00:00' : formatTime(leftSeconds)}
                 </div>
             </div>
             <div className="timer-controls">
                 <button onClick={toggleTimer}>
-                    {gameState.state === "Pause" || gameState.state === "None" ?
+                    {game.gamePlayState === "Pause" || game.gamePlayState === "None" ?
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
                              className="bi bi-play-fill" viewBox="0 0 16 16">
                             <path
@@ -225,4 +236,4 @@ const TestTimer = () => {
     );
 };
 
-export default TestTimer;
+export default TimerPage;

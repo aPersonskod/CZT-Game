@@ -94,8 +94,12 @@ table, th, td {
     border-radius: 20px;
 }
 
-.marginBox{
+.marginBoxTop{
     margin-top: 20px;
+}
+
+.marginBoxBottom{
+    margin-bottom: 20px;
 }
 
 .logo{

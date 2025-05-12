@@ -24,7 +24,7 @@ function IndicatorsPage() {
     return (
         <>
             <div>
-                <div className='row' style={rowFix}>
+                <div className='row justify-content-center' style={rowFix}>
                     <div className='col col-sm-12 col-lg-8'>
                         <div className='sectionBox'>
                             <table className="table table-hover">
@@ -45,7 +45,7 @@ function IndicatorsPage() {
                                 </tbody>
                             </table>
                         </div>
-                        <Button variant="primary" className="me-2 marginBox">
+                        <Button variant="primary" className="me-2 marginBoxTop marginBoxBottom">
                             Выгрузить
                         </Button>
                     </div>
