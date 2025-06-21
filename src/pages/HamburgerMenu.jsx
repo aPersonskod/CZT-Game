@@ -31,9 +31,9 @@ function HamburgerMenu() {
                                     <li key={i+10}>
                                         <NavLink to={p.path} key={i} onClick={handleClose}
                                                  style={({isActive}) => ({
-                                                     color: isActive ? 'black' : '#797979',
-                                                     backgroundColor: isActive ? '#F5F7F9' : '',
-                                                     borderRadius: isActive ? '20px' : ''
+                                                     color: isActive && p.path !== '/CZT-Game' ? 'black' : '#797979',
+                                                     backgroundColor: isActive && p.path !== '/CZT-Game' ? '#F5F7F9' : '',
+                                                     borderRadius: isActive && p.path !== '/CZT-Game' ? '20px' : ''
                                                  })}
                                         >{p.header}</NavLink>
                                     </li>

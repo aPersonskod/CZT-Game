@@ -21,9 +21,9 @@ function Header() {
                         {appService.pages.map((p, i) =>
                             <NavLink key={i} to={p.path}
                                      style={({isActive}) => ({
-                                         color: isActive ? 'black' : '#797979',
-                                         backgroundColor: isActive ? '#F5F7F9' : '',
-                                         borderRadius: isActive ? '20px' : ''
+                                         color: isActive && p.path !== '/CZT-Game' ? 'black' : '#797979',
+                                         backgroundColor: isActive && p.path !== '/CZT-Game' ? '#F5F7F9' : '',
+                                         borderRadius: isActive && p.path !== '/CZT-Game' ? '20px' : ''
                                      })}
                             >{p.header}</NavLink>
                         )}

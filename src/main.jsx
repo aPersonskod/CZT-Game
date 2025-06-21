@@ -12,7 +12,7 @@ import NewIndicationsPage from "./pages/NewIndicationsPage.jsx";
 const router = createBrowserRouter([
     {path: '/CZT-Game', Component: Root, 
         children:[
-            {path: 'summary', Component: SummaryPage},
+            {path: '', Component: SummaryPage},
             {path: 'indicators', Component: IndicatorsPage},
             {path: 'new-indicators', Component: NewIndicationsPage},
             {path: 'details', Component: DetailsPage},

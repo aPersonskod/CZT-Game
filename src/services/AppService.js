@@ -6,7 +6,7 @@
     password = "123qweASD";
     apiDir = "api/model/";
     pages = [
-        {path:'/CZT-Game/summary', header:'Сводная'},
+        {path:'/CZT-Game', header:'Сводная'},
         {path:'/CZT-Game/indicators', header:'Показатели'},
         {path:'/CZT-Game/new-indicators', header:'Новые показатели'},
         {path:'/CZT-Game/details', header:'Детализация'},
