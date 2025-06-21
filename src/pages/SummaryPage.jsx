@@ -1,4 +1,4 @@
-import {useState, useEffect} from "react";
+import React, {useState, useEffect} from "react";
 import TimerPage from "./TimerPage.jsx";
 import ApiService from "../services/ApiService.js";
 export const apiService = new ApiService();
@@ -42,6 +42,7 @@ function SummaryPage() {
                     </div>
                     <div className='col col-sm-12 col-md-10 col-lg-5'>
                         <div className='sectionBox'>
+                            <h4 style={{marginBottom: '20px'}}>Результаты команд</h4>
                             <table className="table table-hover">
                                 <thead>
                                 <tr>

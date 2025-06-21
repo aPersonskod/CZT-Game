@@ -119,6 +119,10 @@ function App() {
     async function getAvailableGames() {
         console.log(await apiService.getAvailableGames());
     }
+    
+    async function getGame(){
+        console.log(await apiService.getGame());
+    }
 
     return (
         <>
@@ -142,7 +146,7 @@ function App() {
                     <button onClick={() => deleteGame()}>
                         Delete Game
                     </button>
-                    <input type='text' placeholder='Delete Game' 
+                    <input type='text' placeholder='Delete Game'
                            onChange={e => setInput(e.target.value)}/>
                 </div>
                 <button onClick={() => startGame()}>
@@ -163,6 +167,9 @@ function App() {
                 <button onClick={() => getGameState()}>
                     Get Game State
                 </button>
+                <button onClick={() => getGame()}>
+                    Get Game
+                </button>
                 <button onClick={() => getSummary()}>
                     Get Summary Result
                 </button>
@@ -174,7 +181,7 @@ function App() {
                 {count}
             </p>
             <button onClick={() => getGameState()}>
-                Game State
+            Game State
             </button>
             <h1>
                 ZAZ

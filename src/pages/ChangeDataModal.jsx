@@ -61,25 +61,12 @@ function OperationDuration() {
 function Arrival() {
     const headerValues = ['Поезд', 'Тип', 'Время'];
     const tableValues = [
-        {train: '2001', type: ['Смена локомотива', 'Смена на заводе'], time: '10:30:00'},
-        {train: '2002', type: ['Смена локомотива', 'Смена на заводе'], time: '11:30:00'},
-        {train: '2004', type: ['Смена локомотива', 'Смена на заводе'], time: '12:30:00'},
-        {train: '2005', type: ['Смена локомотива', 'Смена на заводе'], time: '13:30:00'},
-        {train: '2007', type: ['Смена локомотива', 'Смена на заводе'], time: '15:30:00'},
-        {train: '2009', type: ['Смена локомотива', 'Смена на заводе'], time: '17:30:00'},
-        {train: '2009', type: ['Смена локомотива', 'Смена на заводе'], time: '17:30:00'},
-        {train: '2009', type: ['Смена локомотива', 'Смена на заводе'], time: '17:30:00'},
-        {train: '2009', type: ['Смена локомотива', 'Смена на заводе'], time: '17:30:00'},
-        {train: '2009', type: ['Смена локомотива', 'Смена на заводе'], time: '17:30:00'},
-        {train: '2009', type: ['Смена локомотива', 'Смена на заводе'], time: '17:30:00'},
-        {train: '2009', type: ['Смена локомотива', 'Смена на заводе'], time: '17:30:00'},
-        {train: '2009', type: ['Смена локомотива', 'Смена на заводе'], time: '17:30:00'},
-        {train: '2009', type: ['Смена локомотива', 'Смена на заводе'], time: '17:30:00'},
-        {train: '2009', type: ['Смена локомотива', 'Смена на заводе'], time: '17:30:00'},
-        {train: '2009', type: ['Смена локомотива', 'Смена на заводе'], time: '17:30:00'},
-        {train: '2009', type: ['Смена локомотива', 'Смена на заводе'], time: '17:30:00'},
-        {train: '2009', type: ['Смена локомотива', 'Смена на заводе'], time: '17:30:00'},
-        {train: '2009', type: ['Смена локомотива', 'Смена на заводе'], time: '17:30:00'},
+        {train: '2001', type: ['Смена локомотива', 'Смена поезда'], time: '10:30:00'},
+        {train: '2002', type: ['Смена локомотива', 'Смена поезда'], time: '11:30:00'},
+        {train: '2004', type: ['Смена локомотива', 'Смена поезда'], time: '12:30:00'},
+        {train: '2005', type: ['Смена локомотива', 'Смена поезда'], time: '13:30:00'},
+        {train: '2007', type: ['Смена локомотива', 'Смена поезда'], time: '15:30:00'},
+        {train: '2009', type: ['Смена локомотива', 'Смена поезда'], time: '17:30:00'},
     ];
     return (
         <>
@@ -124,22 +111,6 @@ function Departure() {
         {train: '2005', time: '13:30:00'},
         {train: '2007', time: '15:30:00'},
         {train: '2009', time: '17:30:00'},
-        {train: '2009', time: '17:30:00'},
-        {train: '2009', time: '17:30:00'},
-        {train: '2009', time: '17:30:00'},
-        {train: '2009', time: '17:30:00'},
-        {train: '2009', time: '17:30:00'},
-        {train: '2009', time: '17:30:00'},
-        {train: '2009', time: '17:30:00'},
-        {train: '2009', time: '17:30:00'},
-        {train: '2009', time: '17:30:00'},
-        {train: '2009', time: '17:30:00'},
-        {train: '2009', time: '17:30:00'},
-        {train: '2009', time: '17:30:00'},
-        {train: '2009', time: '17:30:00'},
-        {train: '2009', time: '17:30:00'},
-        {train: '2009', time: '17:30:00'},
-        {train: '2009', time: '17:30:00'},
     ];
     return (
         <>
@@ -171,7 +142,13 @@ function Departure() {
 function ChangeDataModal() {
     const [show, setShow] = useState(false);
 
-    const handleClose = () => setShow(false);
+    const handleReset = () => {
+        alert('Данные сохранены');
+        setShow(false)
+    };
+    const handleClose = () => {
+        setShow(false)
+    };
     const handleShow = () => setShow(true);
 
     const isTabletOrMobile = useMediaQuery({query: '(max-width: 991px)'});
@@ -271,7 +248,7 @@ function ChangeDataModal() {
                     </Container>
                 </Modal.Body>
                 <Modal.Footer>
-                    <Link id={1} title={'Сохранить'} variant={'primary'} onClick={handleClose}
+   {/*                 <Link id={1} title={'Сохранить'} variant={'primary'} onClick={handleClose}
                           children={
                               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                    className="bi bi-floppy2-fill" viewBox="0 0 16 16">
@@ -280,8 +257,8 @@ function ChangeDataModal() {
                                       d="M1.5 0A1.5 1.5 0 0 0 0 1.5v13A1.5 1.5 0 0 0 1.5 16h13a1.5 1.5 0 0 0 1.5-1.5V2.914a1.5 1.5 0 0 0-.44-1.06L14.147.439A1.5 1.5 0 0 0 13.086 0zM4 6a1 1 0 0 1-1-1V1h10v4a1 1 0 0 1-1 1zM3 9h10a1 1 0 0 1 1 1v5H2v-5a1 1 0 0 1 1-1"/>
                               </svg>
                           }
-                    ></Link>
-                    <Link id={1} title={'Выгрузить'} variant={'secondary'} onClick={handleClose}
+                    ></Link>*/}
+{/*                    <Link id={1} title={'Выгрузить'} variant={'secondary'} onClick={handleClose}
                           children={
                               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                    className="bi bi-upload" viewBox="0 0 16 16">
@@ -303,9 +280,9 @@ function ChangeDataModal() {
                               </svg>
                           }
                     ></Link>
-                    <Button variant="primary">Общий сброс</Button>
-                    <Button variant="primary">Сброс</Button>
-                    <Button variant="primary">Применить ко всем</Button>
+                    <Button variant="primary">Общий сброс</Button>*/}
+                    <Button variant="secondary" onClick={handleReset}>Сброс</Button>
+                    <Button variant="primary" onClick={handleReset}>Сохранить</Button>
                 </Modal.Footer>
             </Modal>
         </>

@@ -1,15 +1,118 @@
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import Accordion from 'react-bootstrap/Accordion';
 import Form from 'react-bootstrap/Form';
 import InputGroup from 'react-bootstrap/InputGroup';
+import ApiService from "../services/ApiService.js";
+export const apiService = new ApiService();
 
 function SettingsModal({needCaption}) {
+    const [game, setGame] = useState({
+        systemSettings: {
+            updateTimerIsOn: true,
+            updateClientTime: 1,
+            updateServerTime: 1,
+            highlightTime: 4,
+            gameTime: 120,
+            videoTimeOut: 10,
+            countOfVideo: 1,
+            currentRound: "First",
+            currentPhase: "First",
+            paramStandardSetting: {
+                loceCrewEfficiencyStandard: 78,
+                downtimeStandard: 247,
+                downtimeOfLocalTrainsStandard: 466,
+                downtimeOfUsualTrainsStandard: 126,
+                crewEfficiencyTPCStandard: 12,
+                loadingStandard: 350,
+                unloadingStandard: 350
+            }
+        }
+    });
+    const [highlightTime, setHighlightTime] = useState();
+    const [gameTime, setGameTime] = useState();
+    const [loceCrewEfficiencyStandard, setLoceCrewEfficiencyStandard] = useState();
+    const [downtimeStandard, setDowntimeStandard] = useState();
+    const [downtimeOfLocalTrainsStandard, setDowntimeOfLocalTrainsStandard] = useState();
+    const [downtimeOfUsualTrainsStandard, setDowntimeOfUsualTrainsStandard] = useState();
+    const [crewEfficiencyTPCStandard, setCrewEfficiencyTPCStandard] = useState();
+    const [loadingStandard, setLoadingStandard] = useState();
+    const [unloadingStandard, setUnloadingStandard] = useState();
+    useEffect(() => {
+        (async () => {
+            //let memberName = 'Команда 2 тест';
+            let currentGame = await apiService.getGame();
+            setHighlightTime(currentGame.systemSettings.highlightTime);
+            setGameTime(currentGame.systemSettings.gameTime);
+            setLoceCrewEfficiencyStandard(currentGame.systemSettings.paramStandardSetting.loceCrewEfficiencyStandard);
+            setDowntimeStandard(currentGame.systemSettings.paramStandardSetting.downtimeStandard);
+            setDowntimeOfLocalTrainsStandard(currentGame.systemSettings.paramStandardSetting.downtimeOfLocalTrainsStandard);
+            setDowntimeOfUsualTrainsStandard(currentGame.systemSettings.paramStandardSetting.downtimeOfUsualTrainsStandard);
+            setCrewEfficiencyTPCStandard(currentGame.systemSettings.paramStandardSetting.crewEfficiencyTPCStandard);
+            setLoadingStandard(currentGame.systemSettings.paramStandardSetting.loadingStandard);
+            setUnloadingStandard(currentGame.systemSettings.paramStandardSetting.unloadingStandard);
+        })();
+    }, []);
+    
     const svgStyle = {marginRight:needCaption? '10px' : '0', marginBottom:'4px'};
     const [show, setShow] = useState(false);
 
-    const handleClose = () => setShow(false);
+    const handleClose = async () => {
+        setShow(false);
+    }
+    const handleReset = async () =>{
+        let baseSettings = {
+            settings: {
+                updateTimerIsOn: true,
+                updateClientTime: 1,
+                updateServerTime: 1,
+                highlightTime: 4,
+                gameTime: 120,
+                videoTimeOut: 10,
+                countOfVideo: 1,
+                currentRound: "First",
+                currentPhase: "First",
+                paramStandardSetting: {
+                    loceCrewEfficiencyStandard: 78,
+                    downtimeStandard: 247,
+                    downtimeOfLocalTrainsStandard: 466,
+                    downtimeOfUsualTrainsStandard: 126,
+                    crewEfficiencyTPCStandard: 12,
+                    loadingStandard: 350,
+                    unloadingStandard: 350
+                }
+            }  
+        };
+        await apiService.saveSettings(baseSettings);
+        setShow(false);
+    }
+    const handleSave = async () => {
+        let changedSettings = {
+            settings: {
+                updateTimerIsOn: true,
+                updateClientTime: 1,
+                updateServerTime: 1,
+                highlightTime: highlightTime,
+                gameTime: gameTime,
+                videoTimeOut: 10,
+                countOfVideo: 1,
+                currentRound: "First",
+                currentPhase: "First",
+                paramStandardSetting: {
+                    loceCrewEfficiencyStandard: loceCrewEfficiencyStandard,
+                    downtimeStandard: downtimeStandard,
+                    downtimeOfLocalTrainsStandard: downtimeOfLocalTrainsStandard,
+                    downtimeOfUsualTrainsStandard: downtimeOfUsualTrainsStandard,
+                    crewEfficiencyTPCStandard: crewEfficiencyTPCStandard,
+                    loadingStandard: loadingStandard,
+                    unloadingStandard: unloadingStandard
+                }
+            }
+        }
+        await apiService.saveSettings(changedSettings);
+        setShow(false);
+    }
     const handleShow = () => setShow(true);
     return (
         <>
@@ -70,6 +173,8 @@ function SettingsModal({needCaption}) {
                                                     placeholder="4"
                                                     aria-label="4"
                                                     aria-describedby="basic-addon1"
+                                                    value={highlightTime}
+                                                    onChange={e => setHighlightTime(e.target.value)}
                                                 />
                                             </InputGroup>
                                         </div>
@@ -87,13 +192,15 @@ function SettingsModal({needCaption}) {
                                                     placeholder="120"
                                                     aria-label="120"
                                                     aria-describedby="basic-addon1"
+                                                    value={gameTime}
+                                                    onChange={e => setGameTime(e.target.value)}
                                                 />
                                             </InputGroup>
                                         </div>
                                     </div>
                                 </Accordion.Body>
                             </Accordion.Item>
-                            <Accordion.Item eventKey="3">
+{/*                            <Accordion.Item eventKey="3">
                                 <Accordion.Header>Показ критических ошибок</Accordion.Header>
                                 <Accordion.Body>
                                     <div style={{width: '100%'}}>
@@ -116,7 +223,7 @@ function SettingsModal({needCaption}) {
                                         </div>
                                     </div>
                                 </Accordion.Body>
-                            </Accordion.Item>
+                            </Accordion.Item>*/}
                             <Accordion.Item eventKey="4">
                                 <Accordion.Header>Нормы расчетных показателей</Accordion.Header>
                                 <Accordion.Body>
@@ -126,7 +233,9 @@ function SettingsModal({needCaption}) {
                                                 бригады до отправления с поездом:
                                             </div>
                                             <InputGroup>
-                                                <Form.Control/>
+                                                <Form.Control 
+                                                    value={loceCrewEfficiencyStandard}
+                                                    onChange={e => setLoceCrewEfficiencyStandard(e.target.value)}/>
                                             </InputGroup>
                                         </div>
                                         <div className='d-flex justify-content-between' style={{marginBottom: '5px'}}>
@@ -134,7 +243,8 @@ function SettingsModal({needCaption}) {
                                                 станции:
                                             </div>
                                             <InputGroup>
-                                                <Form.Control/>
+                                                <Form.Control value={downtimeStandard}
+                                                              onChange={e => setDowntimeStandard(e.target.value)}/>
                                             </InputGroup>
                                         </div>
                                         <div className='d-flex justify-content-between' style={{marginBottom: '5px'}}>
@@ -142,7 +252,8 @@ function SettingsModal({needCaption}) {
                                                 вагона:
                                             </div>
                                             <InputGroup>
-                                                <Form.Control/>
+                                                <Form.Control value={downtimeOfLocalTrainsStandard}
+                                                              onChange={e => setDowntimeOfLocalTrainsStandard(e.target.value)}/>
                                             </InputGroup>
                                         </div>
                                         <div className='d-flex justify-content-between' style={{marginBottom: '5px'}}>
@@ -150,7 +261,8 @@ function SettingsModal({needCaption}) {
                                                 вагона без переработки:
                                             </div>
                                             <InputGroup>
-                                                <Form.Control/>
+                                                <Form.Control value={downtimeOfUsualTrainsStandard}
+                                                              onChange={e => setDowntimeOfUsualTrainsStandard(e.target.value)}/>
                                             </InputGroup>
                                         </div>
                                         <div className='d-flex justify-content-between' style={{marginBottom: '5px'}}>
@@ -158,21 +270,24 @@ function SettingsModal({needCaption}) {
                                                 локомотивной бригады с поездом до сдачи ТПС:
                                             </div>
                                             <InputGroup>
-                                                <Form.Control/>
+                                                <Form.Control value={crewEfficiencyTPCStandard}
+                                                              onChange={e => setCrewEfficiencyTPCStandard(e.target.value)}/>
                                             </InputGroup>
                                         </div>
                                         <div className='d-flex justify-content-between' style={{marginBottom: '5px'}}>
                                             <div className="p-2" style={{minWidth: '230px'}}>План по погрузке:
                                             </div>
                                             <InputGroup>
-                                                <Form.Control/>
+                                                <Form.Control value={loadingStandard}
+                                                              onChange={e => setLoadingStandard(e.target.value)}/>
                                             </InputGroup>
                                         </div>
                                         <div className='d-flex justify-content-between' style={{marginBottom: '5px'}}>
                                             <div className="p-2" style={{minWidth: '230px'}}>План по выгрузке:
                                             </div>
                                             <InputGroup>
-                                                <Form.Control/>
+                                                <Form.Control value={unloadingStandard}
+                                                              onChange={e => setUnloadingStandard(e.target.value)}/>
                                             </InputGroup>
                                         </div>
                                     </div>
@@ -182,10 +297,10 @@ function SettingsModal({needCaption}) {
                     </div>
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button variant="secondary" onClick={handleClose}>
+                    <Button variant="secondary" onClick={handleReset}>
                         Сбросить
                     </Button>
-                    <Button variant="primary">Сохранить</Button>
+                    <Button variant="primary" onClick={handleSave}>Сохранить</Button>
                 </Modal.Footer>
             </Modal>
         </>
