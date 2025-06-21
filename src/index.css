@@ -92,6 +92,7 @@ table, th, td {
     padding: 15px;
     background-color: #ffffff;
     border-radius: 20px;
+    overflow: auto;
 }
 
 .marginBoxTop{
